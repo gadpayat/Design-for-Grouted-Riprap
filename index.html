@@ -1,37 +1,335 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Grouted Riprap Designer V2</title><style>
-body{margin:0;font-family:Arial;background:#edf5f7;color:#173744}header{background:#075d69;color:#fff;padding:22px}h1{margin:0}.wrap{max-width:1500px;margin:auto;padding:16px}.grid{display:grid;grid-template-columns:330px 1fr 390px;gap:16px}.card{background:#fff;border:1px solid #cbd9de;border-radius:14px;padding:15px;margin-bottom:16px;box-shadow:0 5px 18px #17424d18}h2{font-size:16px;color:#075d69;border-bottom:2px solid #e1edef;padding-bottom:7px}label{font-size:12px;font-weight:bold;display:block;margin:8px 0 4px}input,select{width:100%;padding:8px;box-sizing:border-box;border:1px solid #b9cbd1;border-radius:7px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{padding:10px 14px;border:0;border-radius:8px;background:#087f8c;color:#fff;font-weight:bold;cursor:pointer}.metricgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{background:#f4fafb;border:1px solid #d5e3e7;padding:9px;border-radius:8px;font-size:12px}.metric b{display:block;font-size:17px;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:7px;border-bottom:1px solid #dce6e9;text-align:left}th{background:#eef6f8}.status{padding:10px;border-radius:8px;margin-top:10px;background:#fff2cf}.pass{background:#e5f7ec;color:#17643c}.fail{background:#fde8e8;color:#982d2d}.note{font-size:11px;line-height:1.45;color:#60737b}canvas{width:100%;height:520px;border:1px solid #cbd9de;border-radius:10px;background:#fbfdfd}@media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid>div:nth-child(2){grid-column:1/-1;grid-row:1}}@media(max-width:700px){.grid{display:block}.row{grid-template-columns:1fr}}@media print{.grid{display:block}.card{box-shadow:none}.actions{display:none}}
-</style></head><body><header><h1>GROUTED RIPRAP DESIGNER — VERSION 2</h1><div>Preliminary stability screening • automatic RSB selection • structural configuration • quantities</div></header><div class="wrap"><div class="grid">
-<div>
-<div class="card"><h2>1. Project & Geometry</h2><label>Project / Location</label><input id="project" value="Grouted Riprap Project"><div class="row"><div><label>Wall Length L (m)</label><input id="L" type="number" value="10" step=".01"></div><div><label>Wall Height H (m)</label><input id="H" type="number" value="4" step=".01"></div></div><div class="row"><div><label>Facing Thickness t (m)</label><input id="t" type="number" value=".30" step=".01"></div><div><label>Batter from Vertical (°)</label><input id="bat" type="number" value="10"></div></div><div class="row"><div><label>Embedment (m)</label><input id="emb" type="number" value=".50"></div><div><label>Footing Width B (m)</label><input id="B" type="number" value="2.50"></div></div><div class="row"><div><label>Footing Thickness (m)</label><input id="ft" type="number" value=".45"></div><div><label>Structural Trigger Height (m)</label><input id="trig" type="number" value="3"></div></div></div>
-<div class="card"><h2>2. Soil & Loading</h2><div class="row"><div><label>Backfill γ (kN/m³)</label><input id="g" type="number" value="18"></div><div><label>Soil φ (°)</label><input id="phi" type="number" value="30"></div></div><div class="row"><div><label>Surcharge q (kPa)</label><input id="q" type="number" value="5"></div><div><label>Groundwater Height (m)</label><input id="gw" type="number" value="0"></div></div><div class="row"><div><label>Seismic kh</label><input id="kh" type="number" value="0"></div><div><label>Foundation friction μ</label><input id="mu" type="number" value=".5"></div></div><label>Allowable Soil Bearing (kPa)</label><input id="qa" type="number" value="150"></div>
-<div class="card"><h2>3. Materials</h2><div class="row"><div><label>Concrete f'c (MPa)</label><input id="fc" type="number" value="21"></div><div><label>Rebar fy (MPa)</label><input id="fy" type="number" value="415"></div></div><div class="row"><div><label>Riprap Unit Weight (kN/m³)</label><input id="rw" type="number" value="22"></div><div><label>Grout Fraction (%)</label><input id="gr" type="number" value="25"></div></div><div class="row"><div><label>Concrete Cover (mm)</label><input id="cov" type="number" value="50"></div><div><label>Concrete Allowance (%)</label><input id="al" type="number" value="5"></div></div></div>
-<div class="card"><h2>4. Structural Layout</h2><div class="row"><div><label>Column Spacing (m)</label><input id="cs" type="number" value="2"></div><div><label>Column Width / Depth (m)</label><input id="cw" type="number" value=".30"></div></div><div class="row"><div><label>Beam Depth (m)</label><input id="bd" type="number" value=".30"></div><div><label>Beam Vertical Spacing (m)</label><input id="bs" type="number" value="2"></div></div></div>
-<div class="card"><h2>5. Automatic RSB Settings</h2><label>Candidate Main Bar Sizes</label><select id="bars" multiple size="6"><option value="12" selected>Ø12</option><option value="16" selected>Ø16</option><option value="20" selected>Ø20</option><option value="25" selected>Ø25</option><option value="28">Ø28</option><option value="32">Ø32</option></select><div class="note">Select/deselect bar sizes. The program automatically chooses the smallest practical bar/count meeting the preliminary steel-area requirement.</div><div class="row"><div><label>Column Tie Ø (mm)</label><select id="ctd"><option>8</option><option selected>10</option><option>12</option></select></div><div><label>Column Tie Spacing (mm)</label><input id="cts" type="number" value="150"></div></div><div class="row"><div><label>Beam Stirrup Ø (mm)</label><select id="bsd"><option selected>8</option><option>10</option><option>12</option></select></div><div><label>Beam Stirrup Spacing (mm)</label><input id="bss" type="number" value="150"></div></div></div><div class="card actions"><button class="btn" onclick="calc()">CALCULATE DESIGN</button> <button class="btn" onclick="print()">PRINT / SAVE PDF</button></div></div>
-<div><div class="card"><h2>6. Automatic 2D Section</h2><canvas id="cv" width="900" height="520"></canvas><div id="mode" class="status"></div></div><div class="card"><h2>7. Stability Screening</h2><div class="metricgrid"><div class="metric">Ka<b id="ka">—</b></div><div class="metric">Lateral Force<b id="lat">—</b></div><div class="metric">Overturning FS<b id="ofs">—</b></div><div class="metric">Sliding FS<b id="sfs">—</b></div><div class="metric">Eccentricity<b id="ecc">—</b></div><div class="metric">qmax<b id="qm">—</b></div></div><div id="st" class="status"></div></div><div class="card"><h2>8. Preliminary Design Actions</h2><table><tbody id="act"></tbody></table></div></div>
-<div><div class="card"><h2>9. Automatic RSB Schedule</h2><table><thead><tr><th>Member</th><th>Required As</th><th>Provided</th><th>Selection</th></tr></thead><tbody id="rsb"></tbody></table></div><div class="card"><h2>10. Strength & System</h2><div class="metricgrid"><div class="metric">Concrete f'c<b id="ofc">—</b></div><div class="metric">Steel fy<b id="ofy">—</b></div><div class="metric">Structural system<b id="sys">—</b></div><div class="metric">Example bar weight<b id="bw">—</b></div></div></div><div class="card"><h2>11. Quantity Estimate</h2><table><tbody id="qty"></tbody></table></div><div class="card"><h2>12. Design Notes</h2><div class="note">This is a preliminary engineering screening tool, not a signed/sealed design. Final design must verify soil parameters, groundwater, drainage, seismic effects, load combinations, global/local stability, concrete shear, flexure, development/lap lengths, confinement, footing behavior, and applicable Philippine code/project requirements with a qualified engineer.</div></div></div>
-</div><footer style="text-align:center;font-size:11px;color:#667980;padding:10px">GROUTED RIPRAP DESIGNER — VERSION 2 • © 2026</footer></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grouted Riprap Designer — Version 1</title>
+<style>
+:root{--bg:#eef3f7;--panel:#fff;--ink:#17212b;--muted:#607080;--line:#cbd5df;--blue:#1769aa;--blue2:#0d4775;--green:#18794e;--warn:#a15c00;--danger:#a32929}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#e8eef3,#f8fafc);color:var(--ink)}
+header{background:linear-gradient(110deg,#123b5d,#1769aa);color:#fff;padding:18px 24px;box-shadow:0 3px 12px #0002}
+header h1{margin:0;font-size:25px} header p{margin:5px 0 0;opacity:.9;font-size:13px}
+.wrap{max-width:1500px;margin:auto;padding:18px}
+.grid{display:grid;grid-template-columns:340px minmax(500px,1fr) 350px;gap:16px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 5px 18px #17324d12;padding:16px}
+.card h2{font-size:16px;margin:0 0 12px;color:var(--blue2);border-bottom:1px solid var(--line);padding-bottom:9px}
+.section{margin-bottom:16px}.row{display:grid;grid-template-columns:1fr 100px;gap:8px;align-items:center;margin:8px 0}
+label{font-size:12px;color:#334454}input,select{width:100%;padding:8px;border:1px solid #b9c6d2;border-radius:6px;background:#fff;font-size:13px}
+input:focus,select:focus{outline:2px solid #1769aa33;border-color:var(--blue)}
+.unit{font-size:11px;color:var(--muted)}
+button{border:0;border-radius:7px;padding:10px 13px;cursor:pointer;font-weight:700}
+.primary{background:var(--blue);color:#fff;width:100%}.secondary{background:#e8eef4;color:#23415a}.print{background:#18794e;color:#fff;width:100%;margin-top:8px}
+.status{padding:10px;border-radius:8px;background:#eaf3fb;border-left:4px solid var(--blue);font-size:12px;line-height:1.45}
+.warn{background:#fff4df;border-left-color:#d68400}.danger{background:#ffe8e8;border-left-color:#b52a2a}
+.canvasWrap{background:#f8fbfd;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#drawing{display:block;width:100%;height:auto;background:#fff}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.metric{padding:10px;border:1px solid var(--line);border-radius:8px;background:#f8fafc}
+.metric b{display:block;font-size:17px;color:var(--blue2);margin-top:3px}.metric span{font-size:11px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:7px;border-bottom:1px solid #dde4ea;text-align:left}th{background:#edf3f7}
+.small{font-size:11px;color:var(--muted);line-height:1.45}.badge{display:inline-block;padding:4px 7px;border-radius:99px;font-size:11px;font-weight:700;background:#e8f5ed;color:#17633f}
+.footer{margin-top:14px;text-align:center;color:#657583;font-size:10px}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}.card{width:100%}}
+@media print{header,.inputs,.actions,.footer{display:none!important}.grid{display:block}.card{box-shadow:none;border:0}.canvasWrap{border:1px solid #888}body{background:#fff}.results{margin-top:20px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>GROUTED RIPRAP DESIGNER</h1>
+  <p>Preliminary geometry, structural-component configuration and quantity estimator</p>
+</header>
+
+<div class="wrap">
+<div class="grid">
+<section class="card inputs">
+  <h2>1. Project & Geometry</h2>
+  <div class="section">
+    <div class="row"><label>Project / Structure</label><input id="project" value="Grouted Riprap Wall"></div>
+    <div class="row"><label>Wall length</label><input id="L" type="number" value="10" min="0.1" step="0.1"><span class="unit">m</span></div>
+    <div class="row"><label>Wall height</label><input id="H" type="number" value="3.50" min="0.1" step="0.05"><span class="unit">m</span></div>
+    <div class="row"><label>Riprap facing thickness</label><input id="t" type="number" value="0.30" min="0.05" step="0.01"><span class="unit">m</span></div>
+    <div class="row"><label>Wall batter / inclination</label><input id="batter" type="number" value="10" min="0" max="45" step="1"><span class="unit">° from vertical</span></div>
+    <div class="row"><label>Foundation embedment</label><input id="embed" type="number" value="0.60" min="0" step="0.05"><span class="unit">m</span></div>
+    <div class="row"><label>Footing width</label><input id="fw" type="number" value="1.20" min="0.1" step="0.05"><span class="unit">m</span></div>
+    <div class="row"><label>Footing thickness</label><input id="ft" type="number" value="0.30" min="0.1" step="0.05"><span class="unit">m</span></div>
+  </div>
+
+  <h2>2. Structural Components</h2>
+  <div class="section">
+    <div class="row"><label>Structural trigger height</label><input id="trigger" type="number" value="3.00" min="0.1" step="0.1"><span class="unit">m</span></div>
+    <div class="row"><label>Column spacing</label><input id="cs" type="number" value="2.50" min="0.5" step="0.1"><span class="unit">m</span></div>
+    <div class="row"><label>Column width</label><input id="cw" type="number" value="0.25" min="0.1" step="0.01"><span class="unit">m</span></div>
+    <div class="row"><label>Column depth</label><input id="cd" type="number" value="0.25" min="0.1" step="0.01"><span class="unit">m</span></div>
+    <div class="row"><label>Beam height</label><input id="bh" type="number" value="0.25" min="0.1" step="0.01"><span class="unit">m</span></div>
+    <div class="row"><label>Beam depth</label><input id="bd" type="number" value="0.20" min="0.1" step="0.01"><span class="unit">m</span></div>
+    <div class="row"><label>Horizontal beam spacing</label><input id="bs" type="number" value="1.50" min="0.5" step="0.1"><span class="unit">m</span></div>
+  </div>
+
+  <h2>3. Materials & Allowances</h2>
+  <div class="section">
+    <div class="row"><label>Riprap unit weight</label><input id="rw" type="number" value="22" min="1" step="0.1"><span class="unit">kN/m³</span></div>
+    <div class="row"><label>Grout fraction of facing</label><input id="gf" type="number" value="25" min="0" max="100" step="1"><span class="unit">%</span></div>
+    <div class="row"><label>Concrete allowance</label><input id="ca" type="number" value="5" min="0" max="30" step="1"><span class="unit">%</span></div>
+    <div class="row"><label>Excavation allowance</label><input id="ea" type="number" value="10" min="0" max="50" step="1"><span class="unit">%</span></div>
+    <div class="row"><label>Filter / bedding thickness</label><input id="filter" type="number" value="0.15" min="0" step="0.01"><span class="unit">m</span></div>
+    <div class="row"><label>Weep-hole spacing</label><input id="ws" type="number" value="1.50" min="0.5" step="0.1"><span class="unit">m horizontal</span></div>
+  </div>
+
+  <h2>4. Concrete & Reinforcing Steel</h2>
+  <div class="section">
+    <div class="row"><label>Concrete strength, f'c</label><input id="fc" type="number" value="21" min="10" step="1"><span class="unit">MPa</span></div>
+    <div class="row"><label>Reinforcing steel grade, fy</label><input id="fy" type="number" value="415" min="200" step="5"><span class="unit">MPa</span></div>
+    <div class="row"><label>Footing main bars</label><select id="fb"><option value="12">12 mm</option><option value="16" selected>16 mm</option><option value="20">20 mm</option><option value="25">25 mm</option></select><span class="unit">diameter</span></div>
+    <div class="row"><label>Footing bar spacing</label><input id="fs" type="number" value="150" min="75" step="25"><span class="unit">mm</span></div>
+    <div class="row"><label>Column vertical bars</label><select id="cv"><option value="12">4–12 mm</option><option value="16" selected>4–16 mm</option><option value="20">4–20 mm</option><option value="25">4–25 mm</option></select><span class="unit">main bars</span></div>
+    <div class="row"><label>Column ties</label><select id="ct"><option value="8" selected>8 mm</option><option value="10">10 mm</option><option value="12">12 mm</option></select><span class="unit">diameter</span></div>
+    <div class="row"><label>Column tie spacing</label><input id="cts" type="number" value="100" min="75" step="25"><span class="unit">mm</span></div>
+    <div class="row"><label>Beam main bars</label><select id="bm"><option value="12">4–12 mm</option><option value="16" selected>4–16 mm</option><option value="20">4–20 mm</option><option value="25">4–25 mm</option></select><span class="unit">main bars</span></div>
+    <div class="row"><label>Beam stirrups</label><select id="bst"><option value="8" selected>8 mm</option><option value="10">10 mm</option><option value="12">12 mm</option></select><span class="unit">diameter</span></div>
+    <div class="row"><label>Beam stirrup spacing</label><input id="bss" type="number" value="100" min="75" step="25"><span class="unit">mm</span></div>
+    <div class="row"><label>Concrete cover</label><input id="cover" type="number" value="50" min="25" step="5"><span class="unit">mm</span></div>
+  </div>
+
+  <div class="actions">
+    <button class="primary" onclick="calculate()">UPDATE DESIGN</button>
+    <button class="print" onclick="window.print()">PRINT / SAVE PDF</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>2D Preliminary Section Drawing</h2>
+  <div class="status" id="status"></div>
+  <div class="canvasWrap" style="margin-top:10px">
+    <canvas id="drawing" width="900" height="620"></canvas>
+  </div>
+  <p class="small" style="margin-top:10px"><b>Drawing note:</b> The section is schematic and not to scale for construction. Dimensions are generated from the input values.</p>
+</section>
+
+<section class="card results">
+  <h2>Design Summary</h2>
+  <div class="metrics">
+    <div class="metric"><span>Wall volume</span><b id="wallVol">—</b></div>
+    <div class="metric"><span>Grout volume</span><b id="groutVol">—</b></div>
+    <div class="metric"><span>Footing concrete</span><b id="footVol">—</b></div>
+    <div class="metric"><span>Columns concrete</span><b id="colVol">—</b></div>
+    <div class="metric"><span>Beams concrete</span><b id="beamVol">—</b></div>
+    <div class="metric"><span>Total concrete</span><b id="totConc">—</b></div>
+    <div class="metric"><span>Excavation</span><b id="excav">—</b></div>
+    <div class="metric"><span>Weep holes</span><b id="weeps">—</b></div>
+    <div class="metric"><span>Estimated RSB</span><b id="steelQty">—</b></div>
+  </div>
+
+  <h2 style="margin-top:18px">Configuration</h2>
+  <table>
+    <tbody>
+      <tr><th>Riprap system</th><td id="cfgRip">—</td></tr>
+      <tr><th>RC footing</th><td id="cfgFoot">—</td></tr>
+      <tr><th>RC columns</th><td id="cfgCol">—</td></tr>
+      <tr><th>RC beams</th><td id="cfgBeam">—</td></tr>
+      <tr><th>Filter layer</th><td id="cfgFilter">—</td></tr>
+      <tr><th>Drainage</th><td id="cfgDrain">—</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:18px">RSB Design Schedule</h2>
+  <table>
+    <thead><tr><th>Member</th><th>Preliminary reinforcement</th><th>Estimated steel</th></tr></thead>
+    <tbody id="rsb"></tbody>
+  </table>
+  <p class="small"><b>RSB note:</b> Bar sizes and spacing shown here are preliminary detailing/estimating values based on the selected inputs. They are not a final structural reinforcement design. Actual reinforcement must be checked against factored loads, development/lap lengths, seismic requirements, anchorage, minimum reinforcement, crack control and applicable structural code requirements.</p>
+
+  <h2 style="margin-top:18px">Concrete / Cement Specification</h2>
+  <table>
+    <tbody>
+      <tr><th>Specified concrete strength f'c</th><td id="fcOut">—</td></tr>
+      <tr><th>Rebar yield strength fy</th><td id="fyOut">—</td></tr>
+      <tr><th>Concrete cover</th><td id="coverOut">—</td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:18px">Quantity Breakdown</h2>
+  <table>
+    <thead><tr><th>Item</th><th>Qty</th><th>Unit</th></tr></thead>
+    <tbody id="boq"></tbody>
+  </table>
+
+  <div id="checks" class="status" style="margin-top:14px"></div>
+</section>
+</div>
+<div class="footer">Grouted Riprap Designer v1 • Preliminary planning/estimating tool • Verify final structural and geotechnical design with a qualified engineer.</div>
+</div>
+
 <script>
-const $=x=>document.getElementById(x),N=x=>Math.max(0,parseFloat($(x).value)||0),A=d=>Math.PI*d*d/4,W=d=>d*d/162;
-function bars(){return [...$('bars').selectedOptions].map(x=>+x.value).sort((a,b)=>a-b)}
-function pick(as,width,sp=200){let ds=bars();if(!ds.length)ds=[12,16,20,25];for(let d of ds){let c=Math.max(2,Math.ceil(as/A(d)));while(width*1000/(c-1)>sp)c++;return{d,c,p:c*A(d),s:width*1000/(c-1)}}}
-function steel(M,b,d,fc,fy){let x=Math.max(M*1e6/(.9*fy*.9*d),.0015*b*d);for(let i=0;i<12;i++){let a=x*fy/(.85*fc*b),mn=x*fy*(d-a/2);x*=M*1e6/(.9*mn);if(!isFinite(x))break}return Math.max(x,.0015*b*d)}
-function f(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—'}
-function calc(){
-let L=N('L'),H=N('H'),t=N('t'),emb=N('emb'),B=N('B'),ft=N('ft'),bat=N('bat'),g=N('g'),ph=N('phi'),q=N('q'),gw=Math.min(N('gw'),H),kh=N('kh'),mu=N('mu'),qa=N('qa'),fc=N('fc'),fy=N('fy'),rw=N('rw'),gr=N('gr'),cov=N('cov'),al=N('al'),cs=N('cs'),cw=N('cw'),bd=N('bd'),bs=N('bs');
-let rad=ph*Math.PI/180,Ka=Math.tan(Math.PI/4-rad/2)**2,soil=.5*g*Ka*H*H,sur=Ka*q*H,water=.5*9.81*Ka*gw*gw,seis=kh*.5*g*H*H,lat=soil+sur+water+seis;
-let area=H*(t+Math.tan(bat*Math.PI/180)*H/2),rv=area*L,fv=B*ft*L,rwgt=rv*rw,fw=fv*24,tw=rwgt+fw,rm=fw*B/2+rwgt*B*.55,om=lat*(H/3+ft),ofs=rm/Math.max(om,.001),sfs=mu*tw/Math.max(lat,.001),ecc=B/2-(rm-om)/Math.max(tw,.001),qm=tw/B*(1+6*Math.abs(ecc)/B);
-$('ka').textContent=f(Ka,3);$('lat').textContent=f(lat)+' kN/m';$('ofs').textContent=f(ofs);$('sfs').textContent=f(sfs);$('ecc').textContent=f(ecc)+' m';$('qm').textContent=f(qm)+' kPa';
-let ok=ofs>=2&&sfs>=1.5&&qm<=qa&&Math.abs(ecc)<=B/6;$('st').className='status '+(ok?'pass':'fail');$('st').innerHTML=(ok?'PRELIMINARY SCREENING: PASS':'PRELIMINARY SCREENING: CHECK / REVISE')+'<br><small>Targets: overturning ≥2.0, sliding ≥1.5, qmax ≤ allowable, |e| ≤ B/6.</small>';
-let structural=H>N('trig');$('mode').className='status';$('mode').textContent=structural?'STRUCTURAL MODE ACTIVE — columns, beams and footing RSB included.':'BASIC RIPRAP MODE — below structural trigger.';
-let fm=lat*H/3*Math.max(B/4,.5),bm=lat*Math.max(bs,1)**2/8,bv=lat*Math.max(bs,1)/2,ca=Math.max(tw*cs/L,1),cm=lat*cs*H/10;
-$('act').innerHTML=`<tr><td>Footing design moment</td><td>${f(fm)} kN·m/m</td></tr><tr><td>Beam design moment</td><td>${f(bm)} kN·m</td></tr><tr><td>Beam shear</td><td>${f(bv)} kN</td></tr><tr><td>Column axial proxy</td><td>${f(ca)} kN</td></tr><tr><td>Column moment proxy</td><td>${f(cm)} kN·m</td></tr>`;
-let fp=pick(steel(fm,B,ft*1000-cov-12,fc,fy),B),cp=pick(Math.max(.01*cw*cw*1e6,steel(cm,cw,cw*1000-cov-12,fc,fy)),cw),bp=pick(steel(bm,cs*1000,bd*1000-cov-8,fc,fy),cs),bt=pick(Math.max(.35*steel(bm,cs*1000,bd*1000-cov-8,fc,fy),.0015*cs*1000*bd*1000),cs);
-$('rsb').innerHTML=[['Footing main',steel(fm,B,ft*1000-cov-12,fc,fy),fp],['Column longitudinal',Math.max(.01*cw*cw*1e6,steel(cm,cw,cw*1000-cov-12,fc,fy)),cp],['Beam bottom',steel(bm,cs*1000,bd*1000-cov-8,fc,fy),bp],['Beam top',Math.max(.35*steel(bm,cs*1000,bd*1000-cov-8,fc,fy),.0015*cs*1000*bd*1000),bt]].map(r=>`<tr><td>${r[0]}</td><td>${f(r[1],0)} mm²</td><td>${f(r[2].p,0)} mm²</td><td><b>${r[2].c}-Ø${r[2].d}</b><br><small>≈${f(r[2].s,0)} mm spacing</small></td></tr>`).join('')+`<tr><td>Column ties</td><td>Detailing</td><td>—</td><td><b>Ø${N('ctd')} @ ${N('cts')} mm</b></td></tr><tr><td>Beam stirrups</td><td>Detailing</td><td>—</td><td><b>Ø${N('bsd')} @ ${N('bss')} mm</b></td></tr>`;
-$('ofc').textContent=fc+' MPa';$('ofy').textContent=fy+' MPa';$('sys').textContent=structural?'ACTIVE':'BASIC';$('bw').textContent='Ø'+fp.d+' = '+f(W(fp.d),3)+' kg/m';
-let conc=(fv+(structural?(Math.ceil(L/cs)*cw*cw*H+(Math.floor(H/bs)+1)*L*bd*cw):0))*(1+al/100),stone=rv*(1-gr/100)*(1+al/100),grv=rv*gr/100*(1+al/100),steelkg=(fp.c*W(fp.d)*L+cp.c*W(cp.d)*H*Math.ceil(L/cs)+bp.c*W(bp.d)*L*(Math.floor(H/bs)+1)+bt.c*W(bt.d)*L*(Math.floor(H/bs)+1))*1.05,exc=(B+.5)*ft*L+B*emb*L;
-$('qty').innerHTML=[['Riprap stone',f(stone,2),'m³'],['Cementitious grout',f(grv,2),'m³'],['Reinforced concrete',f(conc,2),'m³'],['Excavation',f(exc,2),'m³'],['Reinforcing steel',f(steelkg,1),'kg']].map(x=>`<tr><td>${x[0]}</td><td><b>${x[1]}</b> ${x[2]}</td></tr>`).join('');
-draw(H,t,B,emb,structural,cw,bd,cs,bs)
+const $=id=>document.getElementById(id);
+const n=id=>parseFloat($(id).value)||0;
+function fmt(x,d=2){return Number(x).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d})}
+function calculate(){
+  const L=n('L'),H=n('H'),t=n('t'),batter=n('batter'),embed=n('embed'),fw=n('fw'),ft=n('ft');
+  const trigger=n('trigger'),cs=n('cs'),cw=n('cw'),cd=n('cd'),bh=n('bh'),bd=n('bd'),bs=n('bs');
+  const gf=n('gf')/100,ca=n('ca')/100,ea=n('ea')/100,filter=n('filter'),ws=n('ws');
+  const fc=n('fc'),fy=n('fy'),fb=n('fb'),fs=n('fs'),cv=n('cv'),ct=n('ct'),cts=n('cts'),bm=n('bm'),bst=n('bst'),bss=n('bss'),cover=n('cover');
+  const structural=H>trigger;
+  const columns=structural?Math.ceil(L/cs)+1:0;
+  const beamRows=structural?Math.max(1,Math.ceil(H/bs)):0;
+  const beams=structural?beamRows:0;
+  const facingArea=L*H/Math.cos(batter*Math.PI/180);
+  const wallVol=L*H*t/Math.cos(batter*Math.PI/180);
+  const grout=wallVol*gf;
+  const riprap=wallVol-grout;
+  const footVol=structural?L*fw*ft:0;
+  const colVol=structural?columns*cw*cd*Math.max(0,H+ft):0;
+  const beamVol=structural?beams*L*bh*bd:0;
+  const conc=(footVol+colVol+beamVol)*(1+ca);
+  const excavation=L*(fw+0.20)*(ft+embed)*(1+ea);
+  const filterVol=L*H*filter/Math.cos(batter*Math.PI/180);
+
+  // Preliminary RSB take-off. Bar weights use d²/162 kg/m.
+  const kgpm=d=>d*d/162;
+  let footingSteel=0,columnSteel=0,columnTieSteel=0,beamSteel=0,beamStirrupSteel=0;
+  if(structural){
+    const footingBars=Math.ceil((L*1000)/fs)+1;
+    const footingLen=Math.max(0.5,L);
+    footingSteel=footingBars*footingLen*kgpm(fb);
+    const colLen=H+ft+0.60;
+    columnSteel=columns*4*colLen*kgpm(cv);
+    const tieCount=Math.ceil(colLen*1000/cts)+1;
+    const tieLen=2*(cw+cd-2*cover/1000)+0.20;
+    columnTieSteel=columns*tieCount*tieLen*kgpm(ct);
+    const beamLen=L+0.40;
+    beamSteel=beams*4*beamLen*kgpm(bm);
+    const beamStirCount=Math.ceil(L*1000/bss)+1;
+    const beamStirLen=2*(bd+bh-2*cover/1000)+0.20;
+    beamStirrupSteel=beams*beamStirCount*beamStirLen*kgpm(bst);
+  }
+  const steelTotal=(footingSteel+columnSteel+columnTieSteel+beamSteel+beamStirrupSteel)*1.05;
+  const weepRows=Math.max(1,Math.ceil(H/1.5));
+  const weeps=Math.ceil(L/ws)+1;
+  const totalSteelNote=structural?'Reinforcement quantity not automatically sized in V1':'Not applicable in V1';
+  $('wallVol').textContent=fmt(wallVol)+' m³';
+  $('groutVol').textContent=fmt(grout)+' m³';
+  $('footVol').textContent=fmt(footVol*(1+ca))+' m³';
+  $('colVol').textContent=fmt(colVol*(1+ca))+' m³';
+  $('beamVol').textContent=fmt(beamVol*(1+ca))+' m³';
+  $('totConc').textContent=fmt(conc)+' m³';
+  $('excav').textContent=fmt(excav)+' m³';
+  $('weeps').textContent=fmt(weeps*weepRows,0);
+  $('steelQty').textContent=structural?fmt(steelTotal,0)+' kg':'Not triggered';
+  $('fcOut').textContent=fmt(fc,0)+' MPa';
+  $('fyOut').textContent=fmt(fy,0)+' MPa';
+  $('coverOut').textContent=fmt(cover,0)+' mm';
+  $('cfgRip').textContent=fmt(t,2)+' m facing; '+fmt(riprap,2)+' m³ stone + '+fmt(grout,2)+' m³ grout';
+  $('cfgFoot').textContent=structural?'RC footing '+fmt(fw,2)+' × '+fmt(ft,2)+' m':'Not triggered';
+  $('cfgCol').textContent=structural?columns+' columns @ '+fmt(cs,2)+' m':'Not triggered';
+  $('cfgBeam').textContent=structural?beams+' horizontal beam row(s) @ '+fmt(bs,2)+' m':'Not triggered';
+  $('cfgFilter').textContent=fmt(filter,2)+' m filter/bedding layer';
+  $('cfgDrain').textContent=fmt(weeps*weepRows,0)+' preliminary weep holes';
+  $('rsb').innerHTML=structural ? [
+    ['Footing', 'Ø'+fb+' @ '+fs+' mm', footingSteel],
+    ['Columns', '4–Ø'+cv+' vertical; Ø'+ct+' ties @ '+cts+' mm', columnSteel+columnTieSteel],
+    ['Beams', '4–Ø'+bm+' main; Ø'+bst+' stirrups @ '+bss+' mm', beamSteel+beamStirrupSteel],
+    ['Allowance', '5% cutting/waste', steelTotal-(footingSteel+columnSteel+columnTieSteel+beamSteel+beamStirrupSteel)]
+  ].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${fmt(r[2],0)} kg</td></tr>`).join('') :
+  '<tr><td colspan="3">Structural RSB system not triggered at the selected wall height.</td></tr>';
+  $('boq').innerHTML=[
+    ['Excavation',excav,'m³'],['Riprap stone',riprap,'m³'],['Grout',grout,'m³'],
+    ['Filter/bedding',filterVol,'m³'],['RC footing',(footVol*(1+ca)),'m³'],
+    ['RC columns',(colVol*(1+ca)),'m³'],['RC beams',(beamVol*(1+ca)),'m³'],
+    ['Weep holes',weeps*weepRows,'pcs'],['Reinforcing steel (preliminary)',steelTotal,'kg']
+  ].map(r=>`<tr><td>${r[0]}</td><td>${fmt(r[1],r[2]=='pcs'?0:2)}</td><td>${r[2]}</td></tr>`).join('');
+  const st=$('status');
+  if(structural){
+    st.className='status warn';
+    st.innerHTML='<b>STRUCTURAL CONFIGURATION ACTIVE:</b> Wall height exceeds '+fmt(trigger,2)+' m. V1 automatically shows footing, columns and horizontal beams. Final member sizes/reinforcement must be engineered for actual site loads.';
+  }else{
+    st.className='status';
+    st.innerHTML='<b>BASIC RIPRAP CONFIGURATION:</b> Wall height does not exceed the structural trigger. Footing/columns/beams are not automatically included.';
+  }
+  $('checks').className='status '+(H>5?'danger':'warn');
+  $('checks').innerHTML='<b>Engineering check status:</b><br>Geometry, concrete strength input and preliminary RSB quantities calculated. V1 does not yet perform complete sliding, overturning, bearing, seismic, soil-pressure, development-length or code-based reinforcement design checks.<br><br><b>Site-specific review required:</b> soil properties, groundwater, surcharge, seismic effects, foundation capacity and drainage should be verified before construction.';
+  draw({L,H,t,batter,embed,fw,ft,structural,columns,cs,cw,cd,bh,bd,bs,beamRows,filter,weeps,weepRows});
 }
-function draw(H,t,B,emb,structural,cw,bd,cs,bs){let c=$('cv'),x=c.getContext('2d'),s=Math.min(330/(H+emb),500/(B+1)),gx=460,gy=410,by=gy+emb*s,tx=gx-t*s,top=gy-H*s,to=gx-B*s/2,he=gx+B*s/2;x.clearRect(0,0,900,520);x.fillStyle='#d9c6a1';x.fillRect(gx,70,350,gy-70);x.strokeStyle='#52676f';x.lineWidth=2;x.beginPath();x.moveTo(40,gy);x.lineTo(850,gy);x.stroke();x.fillStyle='#789196';x.beginPath();x.moveTo(to,by);x.lineTo(he,by);x.lineTo(gx,top);x.lineTo(tx,top);x.closePath();x.fill();x.stroke();x.fillStyle='#aab9bd';x.fillRect(to,by,B*s,Math.max(20,.45*s));if(structural){x.fillStyle='#879aa1';[to+B*s*.2,to+B*s*.5,to+B*s*.8].forEach(xx=>x.fillRect(xx-cw*s/2,top,cw*s,H*s));for(let yy=gy-H*s+bs*s;yy<gy;yy+=bs*s)x.fillRect(tx-10,yy-bd*s/2,(he-tx)+20,bd*s)}x.fillStyle='#18313f';x.font='bold 15px Arial';x.fillText('H = '+f(H)+' m',55,gy-H*s/2);x.fillText('B = '+f(B)+' m',to+B*s/2,by+38);x.font='12px Arial';x.fillText('Retained soil',gx+20,gy-10);x.fillText('Riprap / grout',tx,top-12);if(structural)x.fillText('RC columns + beams',gx+55,top+35)}
-calc();
-</script></body></html>
+function draw(v){
+ const c=$('drawing'),ctx=c.getContext('2d'),W=c.width,Hc=c.height;
+ ctx.clearRect(0,0,W,Hc);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,Hc);
+ const scale=Math.min(420/(v.H+v.embed+1),650/(v.L+v.fw+1));
+ const ox=120, groundY=475, baseX=ox+v.fw*scale;
+ const wallBaseY=groundY-v.embed*scale;
+ const topY=groundY-v.embed*scale-v.H*scale;
+ const lean=Math.tan(v.batter*Math.PI/180)*v.H*scale;
+ const topX=baseX+lean;
+ // ground
+ ctx.strokeStyle='#445';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(40,groundY);ctx.lineTo(W-30,groundY);ctx.stroke();
+ ctx.fillStyle='#edf1e7';ctx.fillRect(40,groundY+2,W-70,110);
+ // footing
+ if(v.structural){
+  ctx.fillStyle='#aab5bf';ctx.strokeStyle='#46525d';ctx.lineWidth=2;
+  const fx=baseX-v.fw*scale*0.45;
+  ctx.fillRect(fx,wallBaseY,v.fw*scale,v.ft*scale);
+  ctx.strokeRect(fx,wallBaseY,v.fw*scale,v.ft*scale);
+ }
+ // riprap polygon
+ const wallRightBase=baseX, wallRightTop=topX;
+ const wallLeftBase=baseX+v.t*scale, wallLeftTop=topX+v.t*scale;
+ ctx.fillStyle='#b8b8b8';ctx.strokeStyle='#3e464d';ctx.lineWidth=2;
+ ctx.beginPath();ctx.moveTo(wallRightBase,wallBaseY);ctx.lineTo(wallRightTop,topY);ctx.lineTo(wallLeftTop,topY);ctx.lineTo(wallLeftBase,wallBaseY);ctx.closePath();ctx.fill();ctx.stroke();
+ // rock pattern
+ ctx.save();ctx.clip();ctx.strokeStyle='#8b8b8b';ctx.lineWidth=1;
+ for(let y=topY+8;y<wallBaseY;y+=15){ctx.beginPath();ctx.moveTo(baseX-5,y);ctx.lineTo(topX+v.t*scale+8,y+4);ctx.stroke()}
+ for(let x=topX;x<baseX+v.t*scale;x+=18){ctx.beginPath();ctx.moveTo(x,topY);ctx.lineTo(x-8,wallBaseY);ctx.stroke()}
+ ctx.restore();
+ // filter
+ ctx.fillStyle='#d9c8a4';ctx.globalAlpha=.75;
+ ctx.beginPath();ctx.moveTo(wallLeftBase,wallBaseY);ctx.lineTo(wallLeftTop,topY);ctx.lineTo(wallLeftTop+v.filter*scale,topY);ctx.lineTo(wallLeftBase+v.filter*scale,wallBaseY);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+ // backfill
+ ctx.fillStyle='#e2d5b9';ctx.globalAlpha=.45;ctx.beginPath();ctx.moveTo(wallLeftTop+v.filter*scale,topY);ctx.lineTo(W-40,topY);ctx.lineTo(W-40,groundY);ctx.lineTo(wallLeftBase+v.filter*scale,wallBaseY);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+ // columns
+ if(v.structural){
+   ctx.fillStyle='#7c8994';ctx.strokeStyle='#37414a';
+   for(let i=0;i<v.columns;i++){
+     const x=baseX+(i/(v.columns-1))*((topX-baseX))+v.t*scale/2-v.cw*scale/2;
+     const top=topY, bot=wallBaseY;
+     ctx.fillRect(x,top,v.cw*scale,bot-top);ctx.strokeRect(x,top,v.cw*scale,bot-top);
+   }
+   // beams
+   for(let j=1;j<=v.beamRows;j++){
+     const yy=wallBaseY-(j/(v.beamRows+1))*v.H*scale;
+     ctx.fillRect(baseX-2,yy-v.bh*scale/2,(v.t+v.filter+0.05)*scale+2,v.bh*scale);
+     ctx.strokeRect(baseX-2,yy-v.bh*scale/2,(v.t+v.filter+0.05)*scale+2,v.bh*scale);
+     // schematic beam extending to first/last columns
+     ctx.fillRect(baseX-2,yy-v.bh*scale/2,(v.L>0?Math.max(v.cw*scale,250):250),v.bh*scale);
+   }
+ }
+ // weep holes
+ ctx.fillStyle='#12679e';
+ const holes=Math.min(12,Math.max(3,Math.ceil(v.L/v.ws)));
+ for(let i=1;i<=holes;i++){
+   const f=i/(holes+1), yy=wallBaseY-v.H*scale*0.18;
+   const xx=baseX+(topX-baseX)*.18+f*(v.L>0?Math.min(180,v.L*scale*.25):180);
+   ctx.beginPath();ctx.arc(xx,yy,4,0,Math.PI*2);ctx.fill();
+ }
+ // dimensions
+ ctx.fillStyle='#17212b';ctx.font='13px Arial';
+ dim(ctx,baseX-45,wallBaseY,baseX-45,topY,'H = '+fmt(v.H,2)+' m');
+ dim(ctx,baseX,groundY+48,baseX+v.fw*scale,groundY+48,'Footing = '+fmt(v.fw,2)+' m');
+ ctx.fillText('Ground level',45,groundY-8);
+ ctx.fillText('Backfill',W-105,topY+28);
+ ctx.fillText('Grouted riprap',topX+12,(topY+wallBaseY)/2);
+ if(v.structural){
+   ctx.fillText('RC columns',baseX+90,topY+65);
+   ctx.fillText('RC footing',baseX-10,wallBaseY+v.ft*scale/2+4);
+   ctx.fillText('RC beams',baseX+95,wallBaseY-v.H*scale*.55);
+ }
+ ctx.font='bold 15px Arial';ctx.fillText('PRELIMINARY SECTION',35,35);
+}
+function dim(ctx,x1,y1,x2,y2,label){
+ ctx.strokeStyle='#1769aa';ctx.fillStyle='#1769aa';ctx.lineWidth=1.5;
+ ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x1-5,y1);ctx.lineTo(x1+5,y1);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x2-5,y2);ctx.lineTo(x2+5,y2);ctx.stroke();
+ ctx.save();ctx.translate(x1-10,(y1+y2)/2);ctx.rotate(-Math.PI/2);ctx.fillText(label,0,0);ctx.restore();
+}
+document.querySelectorAll('input').forEach(x=>x.addEventListener('input',calculate));
+calculate();
+</script>
+</body>
+</html>
